@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RearWheelDrive
   maxAngle: 30
-  maxTorque: 1200
+  maxTorque: 900
   handbrakeTorque: 5000
   handbrakeSidewaysStiffness: 0.35
   handbrakeForwardStiffness: 0.3
@@ -241,7 +241,7 @@ MonoBehaviour:
   flipKey1: 97
   flipKey2: 100
   flipForceUp: 5000
-  flipTorque: 2000
+  flipTorque: 1500
   handbrakeUIDocument: {fileID: 38755356}
   handbrakeOffTexture: {fileID: 2800000, guid: 3e1299363717e814d9d1c3bf803b042c, type: 3}
   handbrakeOnTexture: {fileID: 2800000, guid: cd08f6f3cecb9014abdfc7bcebd4ce77, type: 3}
@@ -308,7 +308,7 @@ Transform:
   m_GameObject: {fileID: 33355635}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 0.0011430802, w: -0.9999994}
-  m_LocalPosition: {x: -9.38, y: 5.07, z: 5.28}
+  m_LocalPosition: {x: -33.5, y: 5.07, z: -24.258}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5954,8 +5954,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 25950.025
-    damper: 13918.65
+    spring: 25950.05
+    damper: 13918.664
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
   m_ForceAppPointDistance: 1.6235628
@@ -6080,8 +6080,8 @@ MonoBehaviour:
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
-  m_LookAt: {fileID: 1853611783}
-  m_Follow: {fileID: 1853611783}
+  m_LookAt: {fileID: 33355639}
+  m_Follow: {fileID: 33355639}
   m_Lens:
     FieldOfView: 60
     OrthographicSize: 10
@@ -6109,8 +6109,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 303591580}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19012344, y: -2.7923548e-16, z: 2.7617954e-16, w: 0.9817602}
-  m_LocalPosition: {x: -9.1936455, y: 6.5925713, z: -3.2279997}
+  m_LocalRotation: {x: 0.198307, y: 0.000000011573003, z: -0.0000000023415099, w: 0.98014}
+  m_LocalPosition: {x: -33.5, y: 7.88, z: -30.918}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -6612,7 +6612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Cinemachine::Cinemachine.CinemachineTransposer
   m_BindingMode: 2
-  m_FollowOffset: {x: 0, y: 2.68, z: -6.66}
+  m_FollowOffset: {x: 0, y: 2.81, z: -6.66}
   m_XDamping: 4.3
   m_YDamping: 0
   m_ZDamping: 0
@@ -11831,8 +11831,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 759953908}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.19012344, y: -2.3454787e-16, z: 4.5421526e-17, w: 0.9817602}
-  m_LocalPosition: {x: -9.1936455, y: 6.5925713, z: -3.2279997}
+  m_LocalRotation: {x: 0.19830701, y: 0.000000011573004, z: -0.0000000023415099, w: 0.98014}
+  m_LocalPosition: {x: -33.5, y: 7.88, z: -30.918}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13819,8 +13819,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 6719.973
-    damper: 3604.3494
+    spring: 6719.9478
+    damper: 3604.3354
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
   m_ForceAppPointDistance: 1.6235628
@@ -13872,7 +13872,7 @@ Transform:
   m_GameObject: {fileID: 1853611782}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.189, y: -1.157, z: -1.848}
+  m_LocalPosition: {x: 0.189, y: -1.145, z: -1.864}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13921,8 +13921,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 6759.451
-    damper: 3625.524
+    spring: 6759.5024
+    damper: 3625.551
     targetPosition: 0.5
   m_SuspensionDistance: 0.4504132
   m_ForceAppPointDistance: 1.6235628
@@ -14023,8 +14023,8 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 25910.545
-    damper: 13897.475
+    spring: 25910.496
+    damper: 13897.448
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041332
   m_ForceAppPointDistance: 1.6235628
