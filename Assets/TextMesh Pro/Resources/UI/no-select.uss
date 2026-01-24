@@ -1,0 +1,20 @@
+.no-select {
+  -unity-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+/* ограниченно — только внутренний input и базовый контейнер текстового поля.
+   Не трогаем глобально TextElement, чтобы не ломать layout. */
+.no-select .unity-base-text-field,
+.no-select .unity-text-field__input,
+.no-select .unity-text-input {
+  -unity-user-select: none;
+  user-select: none;
+  /* сохраняем высоту/паддинг, чтобы layout не смещался */
+  min-height: 18px;
+  padding: 2px;
+  background-color: transparent;
+  caret-color: transparent; /* прячет каретку, если нужно */
+}

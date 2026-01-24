@@ -1,0 +1,36 @@
+:root {
+}
+
+.header {
+    font-size: 80px;
+    color: rgb(255, 255, 255);
+    -unity-text-align: upper-center;
+}
+
+.button {
+    transition-duration: 0.35s;
+    -unity-background-image-tint-color: rgb(174, 174, 174);
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.button:hover {
+    scale: 1.1 1.1;
+    -unity-background-image-tint-color: rgb(166, 164, 164);
+}
+
+.Text {
+    font-size: 60px;
+    -unity-font-definition: url("project://database/Assets/Other/sans.ttf?fileID=12800000&guid=37fcb84763fad8e44acd96294dc220d4&type=3#sans");
+    -unity-text-align: upper-center;
+    position: absolute;
+}
+
+.Textlow {
+    font-size: 40px;
+    -unity-font-definition: url("project://database/Assets/Other/sans.ttf?fileID=12800000&guid=37fcb84763fad8e44acd96294dc220d4&type=3#sans");
+    -unity-text-align: upper-center;
+    position: absolute;
+}
+
+.Slider {
+}
