@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UIElements;
+using System.Collections;
 
 public class RearWheelDrive : MonoBehaviour
 {
@@ -9,12 +10,8 @@ public class RearWheelDrive : MonoBehaviour
 
     [Header("Handbrake")]
     public float handbrakeTorque = 6000f;
-    private bool handbrakeOn = false;
-
-    [Header("Handbrake Advanced")]
-    public float handbrakeSidewaysStiffness = 0.35f;
-    public float handbrakeForwardStiffness = 0.8f;
     public float handbrakeExtraDamping = 3f;
+    public float handbrakeSmoothTime = 0.25f;
 
     [Header("Grip")]
     public float forwardStiffness = 1.5f;
@@ -57,11 +54,15 @@ public class RearWheelDrive : MonoBehaviour
     public string snowTag = "Snow";
     public float snowDamping = 2f;
 
-    private float defaultDamping;
     private WheelCollider[] wheels;
     private Rigidbody rb;
     private float speedKmh;
-    private bool tireOnSnow = false; // ✅ состояние для звука снега
+    private float defaultDamping;
+    private bool tireOnSnow = false;
+
+    // 🔒 Handbrake state
+    private bool handbrakeOn = false;
+    private Coroutine handbrakeCoroutine;
 
     void Start()
     {
@@ -103,12 +104,6 @@ public class RearWheelDrive : MonoBehaviour
             engineAudio.Play();
         }
 
-        if (handbrakeAudio != null && handbrakeClip != null)
-        {
-            handbrakeAudio.clip = handbrakeClip;
-            handbrakeAudio.loop = false;
-        }
-
         if (tireAudioNormal != null)
         {
             tireAudioNormal.loop = true;
@@ -128,10 +123,17 @@ public class RearWheelDrive : MonoBehaviour
     {
         speedKmh = rb.linearVelocity.magnitude * 3.6f;
 
-        // 🔒 Ручник
+        // ␣ РУЧНИК — TOGGLE
         if (Input.GetKeyDown(KeyCode.Space))
         {
             handbrakeOn = !handbrakeOn;
+
+            if (handbrakeCoroutine != null)
+                StopCoroutine(handbrakeCoroutine);
+
+            handbrakeCoroutine = handbrakeOn
+                ? StartCoroutine(HandbrakeOnRoutine())
+                : StartCoroutine(HandbrakeOffRoutine());
 
             if (handbrakeImage != null)
                 handbrakeImage.image = handbrakeOn ? handbrakeOnTexture : handbrakeOffTexture;
@@ -148,28 +150,11 @@ public class RearWheelDrive : MonoBehaviour
             if (wheel.transform.localPosition.z > 0)
                 wheel.steerAngle = angle;
 
-            if (wheel.transform.localPosition.z < 0)
+            if (wheel.transform.localPosition.z < 0 && !handbrakeOn)
             {
-                if (handbrakeOn)
-                {
-                    wheel.motorTorque = 0f;
-                    wheel.brakeTorque = handbrakeTorque;
-
-                    WheelFrictionCurve s = wheel.sidewaysFriction;
-                    WheelFrictionCurve f = wheel.forwardFriction;
-
-                    s.stiffness = handbrakeSidewaysStiffness;
-                    f.stiffness = handbrakeForwardStiffness;
-
-                    wheel.sidewaysFriction = s;
-                    wheel.forwardFriction = f;
-                }
-                else
-                {
-                    wheel.motorTorque = torque;
-                    wheel.brakeTorque = 0f;
-                    ApplyGrip(wheel);
-                }
+                wheel.motorTorque = torque;
+                wheel.brakeTorque = 0f;
+                ApplyGrip(wheel);
             }
 
             if (wheel.transform.childCount > 0)
@@ -177,16 +162,6 @@ public class RearWheelDrive : MonoBehaviour
                 wheel.GetWorldPose(out Vector3 pos, out Quaternion rot);
                 wheel.transform.GetChild(0).SetPositionAndRotation(pos, rot);
             }
-        }
-
-        if (handbrakeOn)
-        {
-            rb.linearVelocity *= 0.97f;
-            rb.linearDamping = handbrakeExtraDamping;
-        }
-        else
-        {
-            rb.linearDamping = defaultDamping;
         }
 
         UpdateSnowPhysics();
@@ -197,16 +172,71 @@ public class RearWheelDrive : MonoBehaviour
             FlipCar();
     }
 
+    // ======================
+    // HAND BRAKE (ТОРМОЗ)
+    // ======================
+
+    IEnumerator HandbrakeOnRoutine()
+    {
+        float t = 0f;
+        float startDrag = rb.linearDamping;
+
+        while (t < handbrakeSmoothTime)
+        {
+            t += Time.deltaTime;
+            float f = Mathf.Clamp01(t / handbrakeSmoothTime);
+
+            foreach (WheelCollider wheel in wheels)
+            {
+                if (wheel.transform.localPosition.z < 0)
+                    wheel.brakeTorque = Mathf.Lerp(0f, handbrakeTorque, f);
+            }
+
+            rb.linearDamping = Mathf.Lerp(startDrag, handbrakeExtraDamping, f);
+            yield return null;
+        }
+    }
+
+    IEnumerator HandbrakeOffRoutine()
+    {
+        float t = 0f;
+        float startDrag = rb.linearDamping;
+
+        while (t < handbrakeSmoothTime)
+        {
+            t += Time.deltaTime;
+            float f = 1f - Mathf.Clamp01(t / handbrakeSmoothTime);
+
+            foreach (WheelCollider wheel in wheels)
+            {
+                if (wheel.transform.localPosition.z < 0)
+                    wheel.brakeTorque = Mathf.Lerp(0f, handbrakeTorque, f);
+            }
+
+            rb.linearDamping = Mathf.Lerp(startDrag, defaultDamping, 1f - f);
+            yield return null;
+        }
+
+        foreach (WheelCollider wheel in wheels)
+            wheel.brakeTorque = 0f;
+
+        rb.linearDamping = defaultDamping;
+    }
+
+    // ======================
+    // ORIGINAL LOGIC
+    // ======================
+
     void UpdateSnowPhysics()
     {
-        tireOnSnow = false; // по умолчанию нет снега
+        tireOnSnow = false;
 
         foreach (WheelCollider wheel in wheels)
         {
             if (wheel.GetGroundHit(out WheelHit hit) && hit.collider.CompareTag(snowTag))
             {
                 rb.linearDamping = snowDamping;
-                tireOnSnow = true; // машина на снегу
+                tireOnSnow = true;
                 return;
             }
         }
@@ -218,20 +248,19 @@ public class RearWheelDrive : MonoBehaviour
     {
         float normalTarget = tireOnSnow ? 0f : (speedKmh > 2f ? 0.6f : 0f);
         float snowTarget = tireOnSnow ? 0.6f : 0f;
-
         float pitch = Mathf.Lerp(0.8f, 1.2f, speedKmh / 60f);
 
         if (tireAudioNormal != null)
+        {
             tireAudioNormal.volume = Mathf.Lerp(tireAudioNormal.volume, normalTarget, Time.deltaTime * 5f);
-
-        if (tireAudioSnow != null)
-            tireAudioSnow.volume = Mathf.Lerp(tireAudioSnow.volume, snowTarget, Time.deltaTime * 5f);
-
-        if (tireAudioNormal != null)
             tireAudioNormal.pitch = pitch;
+        }
 
         if (tireAudioSnow != null)
+        {
+            tireAudioSnow.volume = Mathf.Lerp(tireAudioSnow.volume, snowTarget, Time.deltaTime * 5f);
             tireAudioSnow.pitch = pitch;
+        }
     }
 
     void UpdateEngineSound()
