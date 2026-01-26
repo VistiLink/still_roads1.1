@@ -17,11 +17,12 @@ public class BoxAndTrunkSmooth : MonoBehaviour
     public KeyCode dropKey = KeyCode.G;      // клавиша для выброса коробки
     public float trunkOpenAngle = 70f;
     public float trunkSpeed = 2f;
-    public float boxMoveSpeed = 5f;          // скорость плавного движения в багажник
-    public Vector3 trunkBounds = new Vector3(1f, 0.5f, 1.5f); // половина размеров багажника
-    public float trunkSoftness = 5f;         // мягкое ограничение движения в багажнике
     public float dropForce = 2f;             // сила выброса коробки
-    public float pullSmoothness = 0.1f;      // плавность притягивания коробки в багажник
+
+    [Header("Effects")]
+    public ParticleSystem teleportEffect;    // эффект при телепортации в багажник
+    public AudioClip teleportSound;          // звук при телепортации
+    public float soundVolume = 1f;           // громкость звука
 
     [Header("Trunk Physics")]
     public TrunkBoxPhysics trunkPhysics;     // ссылка на скрипт физики багажника
@@ -29,9 +30,17 @@ public class BoxAndTrunkSmooth : MonoBehaviour
     private Transform heldBox = null;        // коробка в руках
     private bool trunkOpen = false;
     private float trunkCurrentAngle = 0f;
-    private bool boxMovingToTrunk = false;
     private Transform boxInTrunk = null;     // отслеживание, что коробка в багажнике
-    private Vector3 boxVelocity = Vector3.zero; // для SmoothDamp
+
+    private AudioSource audioSource;         // аудио источник
+
+    void Awake()
+    {
+        // Создаём или получаем AudioSource на объекте
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+    }
 
     void Update()
     {
@@ -42,14 +51,11 @@ public class BoxAndTrunkSmooth : MonoBehaviour
 
     void FixedUpdate()
     {
-        HandleBoxMovement();
-        ApplyTrunkSoftBounds();
-
         // Если коробка ушла далеко — сбрасываем статус "в багажнике"
         if (boxInTrunk != null)
         {
             float distanceFromCenter = Vector3.Distance(boxInTrunk.position, trunkPoint.position);
-            if (distanceFromCenter > trunkBounds.magnitude * 1.5f)
+            if (distanceFromCenter > 5f) // просто большое число, чтобы сбросить
             {
                 boxInTrunk = null; // коробка выпала
             }
@@ -77,16 +83,13 @@ public class BoxAndTrunkSmooth : MonoBehaviour
         }
         else
         {
-            if (!boxMovingToTrunk)
-            {
-                heldBox.position = holdPoint.position;
-                heldBox.rotation = holdPoint.rotation;
+            heldBox.position = holdPoint.position;
+            heldBox.rotation = holdPoint.rotation;
 
-                float distanceToTrunk = Vector3.Distance(transform.position, trunkInteractPoint.position);
-                if (trunkOpen && distanceToTrunk <= trunkInteractRange && Input.GetKeyDown(interactKey))
-                {
-                    StartMovingBoxToTrunk();
-                }
+            float distanceToTrunk = Vector3.Distance(transform.position, trunkInteractPoint.position);
+            if (trunkOpen && distanceToTrunk <= trunkInteractRange && Input.GetKeyDown(interactKey))
+            {
+                TeleportBoxToTrunk();
             }
         }
 
@@ -108,71 +111,44 @@ public class BoxAndTrunkSmooth : MonoBehaviour
         }
     }
 
-    void StartMovingBoxToTrunk()
+    void TeleportBoxToTrunk()
     {
         if (heldBox == null) return;
-        boxMovingToTrunk = true;
-    }
 
-    // ------------------ ПЛАВНОЕ ДВИЖЕНИЕ В БАГАЖНИК ------------------
-    void HandleBoxMovement()
-    {
-        if (boxMovingToTrunk && heldBox != null)
+        // Телепорт коробки
+        heldBox.position = trunkPoint.position;
+        heldBox.rotation = trunkPoint.rotation;
+
+        // Воспроизведение эффекта
+        if (teleportEffect != null)
         {
-            Rigidbody rb = heldBox.GetComponent<Rigidbody>();
-            if (rb == null) return;
+            ParticleSystem effect = Instantiate(teleportEffect, trunkPoint.position, Quaternion.identity);
+            effect.Play();
+            Destroy(effect.gameObject, effect.main.duration + effect.main.startLifetime.constantMax);
+        }
 
-            // Плавное движение позиции к центру багажника
-            heldBox.position = Vector3.SmoothDamp(heldBox.position, trunkPoint.position, ref boxVelocity, pullSmoothness, boxMoveSpeed);
+        // Воспроизведение звука
+        if (teleportSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(teleportSound, soundVolume);
+        }
 
-            // Плавное вращение
-            heldBox.rotation = Quaternion.Slerp(heldBox.rotation, trunkPoint.rotation, boxMoveSpeed * Time.fixedDeltaTime);
+        boxInTrunk = heldBox;
 
-            // Если коробка почти в центре багажника
-            if (Vector3.Distance(heldBox.position, trunkPoint.position) < 0.05f)
+        // --- РЕГИСТРАЦИЯ В TrunkBoxPhysics ---
+        if (trunkPhysics != null)
+        {
+            Rigidbody rbInTrunk = boxInTrunk.GetComponent<Rigidbody>();
+            if (rbInTrunk != null)
             {
-                // Устанавливаем точно на место
-                heldBox.position = trunkPoint.position;
-                heldBox.rotation = trunkPoint.rotation;
-
-                boxInTrunk = heldBox; // коробка теперь в багажнике
-
-                // --- РЕГИСТРАЦИЯ В TrunkBoxPhysics ---
-                if (trunkPhysics != null)
-                {
-                    Rigidbody rbInTrunk = boxInTrunk.GetComponent<Rigidbody>();
-                    if (rbInTrunk != null)
-                    {
-                        trunkPhysics.RegisterBox(rbInTrunk);
-                    }
-                }
-
-                heldBox = null;
-                boxMovingToTrunk = false;
+                trunkPhysics.RegisterBox(rbInTrunk);
             }
         }
+
+        heldBox = null;
     }
 
-    void ApplyTrunkSoftBounds()
-    {
-        if (boxInTrunk == null) return;
-
-        Rigidbody rb = boxInTrunk.GetComponent<Rigidbody>();
-        if (rb == null) return;
-
-        Vector3 localPos = boxInTrunk.position - trunkPoint.position;
-        Vector3 force = Vector3.zero;
-
-        if (localPos.x > trunkBounds.x) force.x = (trunkBounds.x - localPos.x) * trunkSoftness;
-        if (localPos.x < -trunkBounds.x) force.x = (-trunkBounds.x - localPos.x) * trunkSoftness;
-        if (localPos.y > trunkBounds.y) force.y = (trunkBounds.y - localPos.y) * trunkSoftness;
-        if (localPos.y < 0f) force.y = (0f - localPos.y) * trunkSoftness;
-        if (localPos.z > trunkBounds.z) force.z = (trunkBounds.z - localPos.z) * trunkSoftness;
-        if (localPos.z < -trunkBounds.z) force.z = (-trunkBounds.z - localPos.z) * trunkSoftness;
-
-        rb.AddForce(force * Time.fixedDeltaTime, ForceMode.VelocityChange);
-    }
-
+    // ------------------ ДВИЖЕНИЕ ДВЕРИ БАГАЖНИКА ------------------
     void HandleTrunkAnimation()
     {
         if (trunkDoor == null) return;
@@ -196,7 +172,6 @@ public class BoxAndTrunkSmooth : MonoBehaviour
                 rb.AddForce(transform.forward * dropForce, ForceMode.VelocityChange);
             }
             heldBox = null;
-            boxMovingToTrunk = false;
         }
     }
 
@@ -210,8 +185,5 @@ public class BoxAndTrunkSmooth : MonoBehaviour
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(trunkInteractPoint.position, trunkInteractRange);
         }
-
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireCube(trunkPoint.position, trunkBounds * 2f);
     }
 }
