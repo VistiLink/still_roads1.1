@@ -124,12 +124,8 @@ public class RearWheelDrive : MonoBehaviour
         speedKmh = rb.linearVelocity.magnitude * 3.6f;
 
         // ␣ РУЧНИК — TOGGLE
-<<<<<<< HEAD
-        if (Input.GetKeyDown(KeyCode.Space))
-=======
         // Пропускает обработку пробела, если MenuinGame.BlockSpaceInput == true
         if (!MenuinGame.BlockSpaceInput && Input.GetKeyDown(KeyCode.Space))
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
         {
             handbrakeOn = !handbrakeOn;
 
@@ -139,10 +135,6 @@ public class RearWheelDrive : MonoBehaviour
             handbrakeCoroutine = handbrakeOn
                 ? StartCoroutine(HandbrakeOnRoutine())
                 : StartCoroutine(HandbrakeOffRoutine());
-<<<<<<< HEAD
-
-=======
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
             if (handbrakeImage != null)
                 handbrakeImage.image = handbrakeOn ? handbrakeOnTexture : handbrakeOffTexture;
 
