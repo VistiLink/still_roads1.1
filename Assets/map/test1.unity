@@ -194,8 +194,8 @@ GameObject:
   m_Component:
   - component: {fileID: 33355639}
   - component: {fileID: 33355638}
-  - component: {fileID: 33355637}
   - component: {fileID: 33355636}
+  - component: {fileID: 33355637}
   - component: {fileID: 33355642}
   - component: {fileID: 33355641}
   - component: {fileID: 33355653}
@@ -227,8 +227,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RearWheelDrive
   maxAngle: 30
+<<<<<<< HEAD
   maxTorque: 900
   handbrakeTorque: 5043
+=======
+  maxTorque: 1200
+  handbrakeTorque: 5000
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   handbrakeExtraDamping: 9
   handbrakeSmoothTime: 0.15
   forwardStiffness: 2
@@ -6069,7 +6074,11 @@ WheelCollider:
     damper: 13952.519
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
+<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
+=======
+  m_ForceAppPointDistance: 1.6235628
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -6706,6 +6715,88 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+<<<<<<< HEAD
+=======
+--- !u!1 &397155765
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 397155768}
+  - component: {fileID: 397155767}
+  - component: {fileID: 397155766}
+  m_Layer: 5
+  m_Name: MenuinGame
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &397155766
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397155765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f40b4ba4f678cb24e830f22a84ca3be3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  brakeDuration: 0.2
+  maxBrakeTorque: 2
+  frontBrakeFactor: 0.6
+  rpmLockThreshold: 5
+  minBrakeFactorAtLowRpm: 0.25
+  maxBrakeFraction: 0.6
+  brakeAggression: 3
+  additionalLinearDamping: 2
+  additionalAngularDrag: 1
+  controlsToDisable:
+  - {fileID: 33355635}
+--- !u!114 &397155767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397155765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: ac683f5abb18cf94a9513c266483f727, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: ba81002fb428aa74199ab26501d95329, type: 3}
+  m_SortingOrder: 0
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &397155768
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 397155765}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
 --- !u!1 &426031140
 GameObject:
   m_ObjectHideFlags: 3
@@ -6909,7 +7000,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -17.59833, y: 0, z: 11.63889}
-  m_LocalScale: {x: 10, y: 1, z: 20}
+  m_LocalScale: {x: 20, y: 1, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 981609035}
@@ -14213,7 +14304,11 @@ WheelCollider:
     damper: 3570.482
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
+<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
+=======
+  m_ForceAppPointDistance: 1.6235628
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -14418,7 +14513,11 @@ WheelCollider:
     damper: 3591.6472
     targetPosition: 0.5
   m_SuspensionDistance: 0.4504132
+<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
+=======
+  m_ForceAppPointDistance: 1.6235628
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -14520,7 +14619,11 @@ WheelCollider:
     damper: 13931.352
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041332
+<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
+=======
+  m_ForceAppPointDistance: 1.6235628
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -14719,3 +14822,4 @@ SceneRoots:
   - {fileID: 1543658649}
   - {fileID: 233840580}
   - {fileID: 10331923}
+  - {fileID: 397155768}

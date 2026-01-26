@@ -124,7 +124,12 @@ public class RearWheelDrive : MonoBehaviour
         speedKmh = rb.linearVelocity.magnitude * 3.6f;
 
         // ␣ РУЧНИК — TOGGLE
+<<<<<<< HEAD
         if (Input.GetKeyDown(KeyCode.Space))
+=======
+        // Пропускает обработку пробела, если MenuinGame.BlockSpaceInput == true
+        if (!MenuinGame.BlockSpaceInput && Input.GetKeyDown(KeyCode.Space))
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
         {
             handbrakeOn = !handbrakeOn;
 
@@ -134,7 +139,10 @@ public class RearWheelDrive : MonoBehaviour
             handbrakeCoroutine = handbrakeOn
                 ? StartCoroutine(HandbrakeOnRoutine())
                 : StartCoroutine(HandbrakeOffRoutine());
+<<<<<<< HEAD
 
+=======
+>>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
             if (handbrakeImage != null)
                 handbrakeImage.image = handbrakeOn ? handbrakeOnTexture : handbrakeOffTexture;
 
@@ -272,7 +280,6 @@ public class RearWheelDrive : MonoBehaviour
             engineAudio.volume = Mathf.Lerp(engineAudio.volume, 0f, Time.deltaTime * 3f);
             return;
         }
-
         engineAudio.volume = Mathf.Lerp(engineAudio.volume, engineVolume, Time.deltaTime * 3f);
         engineAudio.pitch = Mathf.Lerp(0.9f, maxEnginePitch, speedKmh / 120f);
     }
