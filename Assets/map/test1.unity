@@ -227,7 +227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RearWheelDrive
   maxAngle: 30
-  maxTorque: 900
+  maxTorque: 1200
   handbrakeTorque: 5000
   handbrakeExtraDamping: 9
   handbrakeSmoothTime: 0.15
@@ -240,7 +240,7 @@ MonoBehaviour:
   flipKey1: 97
   flipKey2: 100
   flipForceUp: 5000
-  flipTorque: 1500
+  flipTorque: 2000
   handbrakeUIDocument: {fileID: 38755356}
   handbrakeOffTexture: {fileID: 2800000, guid: 3e1299363717e814d9d1c3bf803b042c, type: 3}
   handbrakeOnTexture: {fileID: 2800000, guid: cd08f6f3cecb9014abdfc7bcebd4ce77, type: 3}
