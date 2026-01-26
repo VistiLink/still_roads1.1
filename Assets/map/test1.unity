@@ -227,13 +227,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RearWheelDrive
   maxAngle: 30
-<<<<<<< HEAD
   maxTorque: 900
   handbrakeTorque: 5043
-=======
-  maxTorque: 1200
-  handbrakeTorque: 5000
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   handbrakeExtraDamping: 9
   handbrakeSmoothTime: 0.15
   forwardStiffness: 2
@@ -6074,11 +6069,7 @@ WheelCollider:
     damper: 13952.519
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
-<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
-=======
-  m_ForceAppPointDistance: 1.6235628
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -6715,8 +6706,6 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
-<<<<<<< HEAD
-=======
 --- !u!1 &397155765
 GameObject:
   m_ObjectHideFlags: 0
@@ -6796,7 +6785,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
 --- !u!1 &426031140
 GameObject:
   m_ObjectHideFlags: 3
@@ -14304,11 +14292,7 @@ WheelCollider:
     damper: 3570.482
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041326
-<<<<<<< HEAD
-  m_ForceAppPointDistance: 1.4735627
-=======
   m_ForceAppPointDistance: 1.6235628
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -14513,11 +14497,7 @@ WheelCollider:
     damper: 3591.6472
     targetPosition: 0.5
   m_SuspensionDistance: 0.4504132
-<<<<<<< HEAD
-  m_ForceAppPointDistance: 1.4735627
-=======
   m_ForceAppPointDistance: 1.6235628
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
@@ -14619,11 +14599,7 @@ WheelCollider:
     damper: 13931.352
     targetPosition: 0.5
   m_SuspensionDistance: 0.45041332
-<<<<<<< HEAD
   m_ForceAppPointDistance: 1.4735627
-=======
-  m_ForceAppPointDistance: 1.6235628
->>>>>>> a05381e1b5c8bf086096cff74b2977f5e8a9870e
   m_Mass: 20
   m_WheelDampingRate: 0.25
   m_ForwardFriction:
