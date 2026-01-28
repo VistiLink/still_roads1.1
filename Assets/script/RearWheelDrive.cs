@@ -123,7 +123,7 @@ public class RearWheelDrive : MonoBehaviour
     {
         speedKmh = rb.linearVelocity.magnitude * 3.6f;
 
-        // ␣ РУЧНИК — TOGGLE
+
         // Пропускает обработку пробела, если MenuinGame.BlockSpaceInput == true
         if (!MenuinGame.BlockSpaceInput && Input.GetKeyDown(KeyCode.Space))
         {
