@@ -87,6 +87,9 @@ public class MainMenuEvents : MonoBehaviour
     // Новый флаг: меню подавлено после нажатия Start — не показывать автоматически до нажатия Esc
     private bool _menuSuppressed = false;
 
+    // Временная отладочная опция — форсировать показ меню при старте (можно убрать после отладки)
+    [SerializeField] private bool _debugForceShowMenu = true;
+
     private void Awake()
     {
         // singleton + persist
@@ -296,6 +299,36 @@ public class MainMenuEvents : MonoBehaviour
 
         // если UIDocument есть, попытаться назначить label из текущей сцены/документа
         AssignLabelInCurrentScene();
+
+        // гарантируем, что UIDocument имеет корректную Event Camera (если PanelSettings требует её)
+        EnsureUIDocumentEventCamera();
+
+        // гарантируем, что EventSystem есть (нужно для фокуса/клика в UI Toolkit в рантайме)
+        if (UnityEngine.Object.FindObjectOfType<UnityEngine.EventSystems.EventSystem>() == null)
+        {
+            var esGO = new GameObject("EventSystem");
+            esGO.AddComponent<UnityEngine.EventSystems.EventSystem>();
+            esGO.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            DontDestroyOnLoad(esGO);
+        }
+
+        // Диагностика состояния UIDocument / rootVisualElement — логируем состав и видимость
+        LogUIDocumentState();
+
+        // Временное: принудительно показать главное меню для проверки (можно отключить после отладки)
+        if (_debugForceShowMenu && mainMenu != null)
+        {
+            try
+            {
+                _menuSuppressed = false;
+                mainMenu.style.display = UIE.DisplayStyle.Flex;
+                Debug.Log("DEBUG: mainMenu принудительно показано (debugForceShowMenu = true).");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning("DEBUG: не удалось принудительно показать mainMenu: " + ex.Message);
+            }
+        }
     }
 
     private void OnDestroy()
@@ -940,4 +973,151 @@ public class MainMenuEvents : MonoBehaviour
         return int.MinValue;
     }
 #endif
+
+    // --- Новые вспомогательные методы для гарантии отображения UI Toolkit ---
+    private void EnsureUIDocumentEventCamera()
+    {
+        if (_document == null) return;
+        var panelSettings = _document.panelSettings;
+        if (panelSettings == null) return;
+
+        var t = panelSettings.GetType();
+
+        // Попытка найти свойство Camera (разные версии Unity используют разные имена)
+        var camProp = t.GetProperty("eventCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+                      ?? t.GetProperty("targetCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+                      ?? t.GetProperty("camera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+
+        if (camProp != null && camProp.PropertyType == typeof(Camera))
+        {
+            var cur = camProp.GetValue(panelSettings) as Camera;
+            if (cur == null)
+            {
+                var cam = FindOrCreateUICamera();
+                try { camProp.SetValue(panelSettings, cam); Debug.Log($"Assigned camera to PanelSettings property '{camProp.Name}'."); } catch (Exception ex) { Debug.LogWarning("EnsureUIDocumentEventCamera: failed to set camera property: " + ex.Message); }
+            }
+            return;
+        }
+
+        // Если нет свойства — пробуем поля (private/public)
+        var camField = t.GetField("eventCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase)
+                       ?? t.GetField("targetCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase)
+                       ?? t.GetField("camera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+
+        if (camField != null && camField.FieldType == typeof(Camera))
+        {
+            var cur = camField.GetValue(panelSettings) as Camera;
+            if (cur == null)
+            {
+                var cam = FindOrCreateUICamera();
+                try { camField.SetValue(panelSettings, cam); Debug.Log($"Assigned camera to PanelSettings field '{camField.Name}'."); } catch (Exception ex) { Debug.LogWarning("EnsureUIDocumentEventCamera: failed to set camera field: " + ex.Message); }
+            }
+        }
+    }
+
+    private Camera FindOrCreateUICamera()
+    {
+        // Попытки найти подходящую камеру: main, current, любой существующий
+        Camera cam = Camera.main;
+        if (cam == null) cam = Camera.current;
+        if (cam == null) cam = UnityEngine.Object.FindObjectOfType<Camera>();
+
+        if (cam != null)
+        {
+            // если камера найдена, повысим глубину, чтобы UI рисовался поверх, и убедимся, что она активна
+            try
+            {
+                cam.depth = Mathf.Max(cam.depth, 10f);
+                cam.gameObject.SetActive(true);
+            }
+            catch { }
+            return cam;
+        }
+
+        // Нельзя найти камеру — создаём новую минимальную камеру для UI
+        var go = new GameObject("UICamera_Runtime");
+        DontDestroyOnLoad(go);
+        cam = go.AddComponent<Camera>();
+        cam.clearFlags = CameraClearFlags.Depth;
+        cam.cullingMask = -1; // рендерим всё (безопасно для UI Toolkit)
+        cam.depth = 100f;
+        cam.nearClipPlane = 0.01f;
+        cam.farClipPlane = 1000f;
+        // Не мешаем основной логике сцены
+        go.hideFlags = HideFlags.DontSave;
+        Debug.Log("Создана UICamera_Runtime для рендеринга UI Toolkit (кнопки/меню).");
+        return cam;
+    }
+
+    // Диагностика состояния UIDocument / rootVisualElement
+    private void LogUIDocumentState()
+    {
+        try
+        {
+            if (_document == null)
+            {
+                Debug.LogWarning("LogUIDocumentState: UIDocument == null");
+                return;
+            }
+
+            Debug.Log($"LogUIDocumentState: UIDocument found on '{gameObject.name}'.");
+
+            var panelSettings = _document.panelSettings;
+            Debug.Log($"LogUIDocumentState: panelSettings = {(panelSettings == null ? "null" : panelSettings.GetType().Name)}");
+
+            if (panelSettings != null)
+            {
+                var t = panelSettings.GetType();
+                var camProp = t.GetProperty("eventCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+                              ?? t.GetProperty("targetCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase)
+                              ?? t.GetProperty("camera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
+                if (camProp != null)
+                {
+                    var cam = camProp.GetValue(panelSettings) as Camera;
+                    Debug.Log($"LogUIDocumentState: PanelSettings.{camProp.Name} = {(cam == null ? "null" : cam.name + " (depth=" + cam.depth + ")")}");
+                }
+                else
+                {
+                    var camField = t.GetField("eventCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase)
+                                   ?? t.GetField("targetCamera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase)
+                                   ?? t.GetField("camera", BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.IgnoreCase);
+                    if (camField != null)
+                    {
+                        var cam = camField.GetValue(panelSettings) as Camera;
+                        Debug.Log($"LogUIDocumentState: PanelSettings.{camField.Name} = {(cam == null ? "null" : cam.name + " (depth=" + cam.depth + ")")}");
+                    }
+                    else Debug.Log("LogUIDocumentState: не найдено поле/свойство камеры в PanelSettings (возможно версия Unity использует другой механизм).");
+                }
+            }
+
+            var root = _document.rootVisualElement;
+            if (root == null)
+            {
+                Debug.LogWarning("LogUIDocumentState: rootVisualElement == null");
+                return;
+            }
+
+            Debug.Log($"LogUIDocumentState: rootVisualElement childCount = {root.hierarchy.childCount}");
+            var children = root.Children().ToList();
+            for (int i = 0; i < children.Count; i++)
+            {
+                var child = children[i];
+                string name = string.IsNullOrEmpty(child.name) ? "(no name)" : child.name;
+                Debug.Log($"LogUIDocumentState: root child[{i}] = '{name}', type={child.GetType().Name}, display={child.style.display}");
+            }
+
+            if (mainMenu == null)
+            {
+                Debug.LogWarning("LogUIDocumentState: mainMenu элемент не найден (Q('MainMenu') вернул null).");
+            }
+            else
+            {
+                Debug.Log($"LogUIDocumentState: mainMenu found; display={mainMenu.style.display}; visible in hierarchy? (no direct API)");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning("LogUIDocumentState failed: " + ex.Message);
+        }
+    }
 }

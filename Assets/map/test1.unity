@@ -952,7 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
-  m_PanelSettings: {fileID: 11400000, guid: 88e9e542d5cfb264582569f42cce3657, type: 2}
+  m_PanelSettings: {fileID: 11400000, guid: ac683f5abb18cf94a9513c266483f727, type: 2}
   m_ParentUI: {fileID: 0}
   sourceAsset: {fileID: 9197481963319205126, guid: 6688f12c3c01f274aa4c74bd003a52e4, type: 3}
   m_SortingOrder: 0
