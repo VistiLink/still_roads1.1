@@ -1,4 +1,7 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI%20Toolkit/brakecss.uss?fileID=7433441132597879392&amp;guid=7dfdcb4aab2e957479443bfaa97617bf&amp;type=3#brakecss"/>
     <ui:Image name="HandbrakeIcon" class="handbrake-icon" style="top: 915px; left: 130px; right: 1655px; bottom: 27px; position: absolute; width: 128px; height: 128px;"/>
+    <ui:VisualElement name="HandbrakeUI" style="flex-grow: 1;">
+        <ui:Label text="00:00" name="Clock" style="-unity-font-definition: url(&quot;project://database/Assets/Other/sans.ttf?fileID=12800000&amp;guid=37fcb84763fad8e44acd96294dc220d4&amp;type=3#sans&quot;); font-size: 60px; position: absolute; top: 930px; left: 1733px; height: 84px; width: 165px;"/>
+    </ui:VisualElement>
 </ui:UXML>
