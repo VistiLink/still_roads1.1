@@ -16,11 +16,23 @@ public class PlayerThirdPersonMovement : MonoBehaviour
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+    }
 
+    // OnEnable срабатывает каждый раз, когда персонаж появляется/активируется
+    void OnEnable()
+    {
         if (ExitPosition != null)
         {
+            // Отключаем контроллер на мгновение, чтобы переместить персонажа без помех физики
+            if (controller == null) controller = GetComponent<CharacterController>();
+            controller.enabled = false;
+
             transform.position = ExitPosition.position;
-            transform.rotation = Quaternion.identity; // смотрит по Z+
+
+            // Quaternion.identity — это вращение (0, 0, 0), взгляд строго вдоль оси Z
+            transform.rotation = Quaternion.identity;
+
+            controller.enabled = true;
         }
         else
         {

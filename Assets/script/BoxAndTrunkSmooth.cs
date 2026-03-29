@@ -1,45 +1,51 @@
 using UnityEngine;
 
+// --- ОСНОВНОЙ КЛАСС ИГРОКА ---
 public class BoxAndTrunkSmooth : MonoBehaviour
 {
     [Header("References")]
-    public Transform holdPoint;          // точка над персонажем
-    public Transform trunkPoint;         // центр багажника
-    public Transform trunkDoor;          // дверь багажника
-    public Transform trunkInteractPoint; // точка для проверки дистанции к багажнику
-    public Rigidbody carRigidbody;       // Rigidbody машины
+    public Transform holdPoint;
+    public Transform trunkPoint;
+    public Transform trunkDoor;
+    public Transform trunkInteractPoint;
+    public Rigidbody carRigidbody;
 
     [Header("Settings")]
     public float pickupRange = 2f;
     public float trunkInteractRange = 2f;
     public KeyCode interactKey = KeyCode.E;
     public KeyCode trunkKey = KeyCode.F;
-    public KeyCode dropKey = KeyCode.G;      // клавиша для выброса коробки
+    public KeyCode dropKey = KeyCode.G;
     public float trunkOpenAngle = 70f;
     public float trunkSpeed = 2f;
-    public float dropForce = 2f;             // сила выброса коробки
+    public float dropForce = 2f;
 
     [Header("Effects")]
-    public ParticleSystem teleportEffect;    // эффект при телепортации в багажник
-    public AudioClip teleportSound;          // звук при телепортации
-    public float soundVolume = 1f;           // громкость звука
+    public ParticleSystem teleportEffect; // Эффект телепортации в багажник
+    public ParticleSystem destroyEffect;  // ЭФФЕКТ ИСЧЕЗНОВЕНИЯ КОРОБКИ
+    public AudioClip teleportSound;
+    public float soundVolume = 1f;
 
     [Header("Trunk Physics")]
-    public TrunkBoxPhysics trunkPhysics;     // ссылка на скрипт физики багажника
+    public TrunkBoxPhysics trunkPhysics;
 
-    private Transform heldBox = null;        // коробка в руках
+    [Header("Secondary Box Settings")]
+    public float secondaryFollowHeight = 0.5f;
+    public float secondaryDestroyDelay = 0.1f;
+
+    private Transform heldBox = null;
+    private Transform secondaryBox = null;
+    private Rigidbody secondaryBoxRb = null;
+
     private bool trunkOpen = false;
     private float trunkCurrentAngle = 0f;
-    private Transform boxInTrunk = null;     // отслеживание, что коробка в багажнике
+    private Transform boxInTrunk = null;
 
-    private AudioSource audioSource;         // аудио источник
+    private AudioSource audioSource;
 
     void Awake()
     {
-        // Создаём или получаем AudioSource на объекте
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
     }
 
     void Update()
@@ -51,30 +57,25 @@ public class BoxAndTrunkSmooth : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Если коробка ушла далеко — сбрасываем статус "в багажнике"
         if (boxInTrunk != null)
         {
-            float distanceFromCenter = Vector3.Distance(boxInTrunk.position, trunkPoint.position);
-            if (distanceFromCenter > 5f) // просто большое число, чтобы сбросить
-            {
-                boxInTrunk = null; // коробка выпала
-            }
+            if (Vector3.Distance(boxInTrunk.position, trunkPoint.position) > 5f)
+                boxInTrunk = null;
         }
     }
 
-    // ------------------ ПОДБОР И ВЫКЛАДКА ------------------
     void HandlePickup()
     {
         if (heldBox == null)
         {
-            Collider[] hits = Physics.OverlapSphere(transform.position, pickupRange);
-            foreach (var hit in hits)
+            if (Input.GetKeyDown(interactKey))
             {
-                if (hit.CompareTag("Box"))
+                Collider[] hits = Physics.OverlapSphere(transform.position, pickupRange);
+                foreach (var hit in hits)
                 {
-                    if (boxInTrunk == hit.transform && !trunkOpen) continue; // нельзя взять из закрытого багажника
-                    if (Input.GetKeyDown(interactKey))
+                    if (hit.CompareTag("Box"))
                     {
+                        if (boxInTrunk == hit.transform && !trunkOpen) continue;
                         PickupBox(hit.transform);
                         break;
                     }
@@ -86,17 +87,15 @@ public class BoxAndTrunkSmooth : MonoBehaviour
             heldBox.position = holdPoint.position;
             heldBox.rotation = holdPoint.rotation;
 
-            float distanceToTrunk = Vector3.Distance(transform.position, trunkInteractPoint.position);
-            if (trunkOpen && distanceToTrunk <= trunkInteractRange && Input.GetKeyDown(interactKey))
+            if (trunkOpen && Vector3.Distance(transform.position, trunkInteractPoint.position) <= trunkInteractRange)
             {
-                TeleportBoxToTrunk();
+                if (Input.GetKeyDown(interactKey)) TeleportBoxToTrunk();
             }
         }
 
-        float distToTrunk = Vector3.Distance(transform.position, trunkInteractPoint.position);
-        if (distToTrunk <= trunkInteractRange && Input.GetKeyDown(trunkKey))
+        if (Vector3.Distance(transform.position, trunkInteractPoint.position) <= trunkInteractRange)
         {
-            trunkOpen = !trunkOpen;
+            if (Input.GetKeyDown(trunkKey)) trunkOpen = !trunkOpen;
         }
     }
 
@@ -104,10 +103,30 @@ public class BoxAndTrunkSmooth : MonoBehaviour
     {
         heldBox = box;
         Rigidbody rb = heldBox.GetComponent<Rigidbody>();
-        if (rb != null)
+        if (rb != null) rb.isKinematic = true;
+
+        Collider[] colliders = Physics.OverlapBox(box.position + Vector3.up * 0.5f, box.localScale);
+        foreach (var col in colliders)
         {
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
+            if (col.CompareTag("ExtraBox"))
+            {
+                secondaryBox = col.transform;
+                secondaryBoxRb = secondaryBox.GetComponent<Rigidbody>();
+
+                Vector3 relativePos = box.InverseTransformPoint(secondaryBox.position);
+                Quaternion relativeRot = Quaternion.Inverse(box.rotation) * secondaryBox.rotation;
+
+                secondaryBox.SetParent(heldBox);
+                secondaryBox.localPosition = relativePos;
+                secondaryBox.localRotation = relativeRot;
+
+                secondaryBoxRb.isKinematic = true;
+
+                SecondaryBoxLogic logic = secondaryBox.GetComponent<SecondaryBoxLogic>();
+                if (logic != null) logic.inCar = false;
+
+                break;
+            }
         }
     }
 
@@ -115,49 +134,36 @@ public class BoxAndTrunkSmooth : MonoBehaviour
     {
         if (heldBox == null) return;
 
-        // Телепорт коробки
         heldBox.position = trunkPoint.position;
         heldBox.rotation = trunkPoint.rotation;
 
-        // Воспроизведение эффекта
-        if (teleportEffect != null)
-        {
-            ParticleSystem effect = Instantiate(teleportEffect, trunkPoint.position, Quaternion.identity);
-            effect.Play();
-            Destroy(effect.gameObject, effect.main.duration + effect.main.startLifetime.constantMax);
-        }
+        Rigidbody mainRb = heldBox.GetComponent<Rigidbody>();
+        if (mainRb != null) mainRb.isKinematic = false;
 
-        // Воспроизведение звука
-        if (teleportSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(teleportSound, soundVolume);
-        }
+        if (teleportEffect != null) Instantiate(teleportEffect, trunkPoint.position, Quaternion.identity);
+        if (teleportSound != null) audioSource.PlayOneShot(teleportSound, soundVolume);
 
         boxInTrunk = heldBox;
+        if (trunkPhysics != null && mainRb != null) trunkPhysics.RegisterBox(mainRb);
 
-        // --- РЕГИСТРАЦИЯ В TrunkBoxPhysics ---
-        if (trunkPhysics != null)
+        if (secondaryBox != null)
         {
-            Rigidbody rbInTrunk = boxInTrunk.GetComponent<Rigidbody>();
-            if (rbInTrunk != null)
-            {
-                trunkPhysics.RegisterBox(rbInTrunk);
-            }
+            secondaryBox.SetParent(null);
+            secondaryBoxRb.isKinematic = false;
+
+            SecondaryBoxLogic logic = secondaryBox.GetComponent<SecondaryBoxLogic>();
+            if (logic == null) logic = secondaryBox.gameObject.AddComponent<SecondaryBoxLogic>();
+
+            // Передаем настройки и ЭФФЕКТ в логику коробки
+            logic.destroyDelay = secondaryDestroyDelay;
+            logic.effectPrefab = destroyEffect;
+            logic.inCar = true;
+
+            secondaryBox = null;
+            secondaryBoxRb = null;
         }
 
         heldBox = null;
-    }
-
-    // ------------------ ДВИЖЕНИЕ ДВЕРИ БАГАЖНИКА ------------------
-    void HandleTrunkAnimation()
-    {
-        if (trunkDoor == null) return;
-
-        float targetAngle = trunkOpen ? trunkOpenAngle : 0f;
-        trunkCurrentAngle = Mathf.MoveTowards(trunkCurrentAngle, targetAngle, trunkSpeed * 50f * Time.deltaTime);
-        trunkCurrentAngle = Mathf.Clamp(trunkCurrentAngle, 0f, trunkOpenAngle);
-
-        trunkDoor.localEulerAngles = new Vector3(-trunkCurrentAngle, 0f, 0f);
     }
 
     void HandleDrop()
@@ -167,23 +173,50 @@ public class BoxAndTrunkSmooth : MonoBehaviour
             Rigidbody rb = heldBox.GetComponent<Rigidbody>();
             if (rb != null)
             {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-                rb.AddForce(transform.forward * dropForce, ForceMode.VelocityChange);
+                rb.isKinematic = false;
+                rb.AddForce(transform.forward * dropForce, ForceMode.Impulse);
             }
+
+            if (secondaryBox != null)
+            {
+                secondaryBox.SetParent(null);
+                secondaryBoxRb.isKinematic = false;
+            }
+
             heldBox = null;
+            secondaryBox = null;
         }
     }
 
-    private void OnDrawGizmosSelected()
+    void HandleTrunkAnimation()
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, pickupRange);
+        if (trunkDoor == null) return;
+        float targetAngle = trunkOpen ? trunkOpenAngle : 0f;
+        trunkCurrentAngle = Mathf.MoveTowards(trunkCurrentAngle, targetAngle, trunkSpeed * 100f * Time.deltaTime);
+        trunkDoor.localEulerAngles = new Vector3(-trunkCurrentAngle, 0f, 0f);
+    }
+}
 
-        if (trunkInteractPoint != null)
+// --- ЛОГИКА ВТОРОЙ КОРОБКИ (С ЭФФЕКТОМ) ---
+public class SecondaryBoxLogic : MonoBehaviour
+{
+    public float destroyDelay;
+    public ParticleSystem effectPrefab;
+    public bool inCar = false;
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (inCar && collision.gameObject.layer == LayerMask.NameToLayer("groundbox"))
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(trunkInteractPoint.position, trunkInteractRange);
+            // Создаем эффект перед удалением
+            if (effectPrefab != null)
+            {
+                ParticleSystem eff = Instantiate(effectPrefab, transform.position, Quaternion.identity);
+                eff.Play();
+                Destroy(eff.gameObject, 2f); // Удаляем сам эффект через пару секунд
+            }
+
+            Destroy(gameObject, destroyDelay);
         }
     }
 }

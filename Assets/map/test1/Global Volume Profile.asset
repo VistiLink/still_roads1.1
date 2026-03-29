@@ -1,0 +1,224 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-7480392924930402743
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b2db86121404754db890f4c8dfe81b2, type: 3}
+  m_Name: Bloom
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.Bloom
+  active: 0
+  skipIterations:
+    m_OverrideState: 0
+    m_Value: 1
+  threshold:
+    m_OverrideState: 1
+    m_Value: 9.78
+  intensity:
+    m_OverrideState: 1
+    m_Value: 21.29
+  scatter:
+    m_OverrideState: 1
+    m_Value: 0.7
+  clamp:
+    m_OverrideState: 1
+    m_Value: 65472
+  tint:
+    m_OverrideState: 1
+    m_Value: {r: 1, g: 1, b: 1, a: 1}
+  highQualityFiltering:
+    m_OverrideState: 1
+    m_Value: 0
+  filter:
+    m_OverrideState: 1
+    m_Value: 0
+  downscale:
+    m_OverrideState: 0
+    m_Value: 0
+  maxIterations:
+    m_OverrideState: 0
+    m_Value: 6
+  dirtTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  dirtIntensity:
+    m_OverrideState: 1
+    m_Value: 0
+--- !u!114 &-4277203260421674215
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96575ff06efbe184aa6c6f9f90b4aab9, type: 3}
+  m_Name: FogVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.FogVolume
+  active: 0
+  isEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+  fogFalloffMode:
+    m_OverrideState: 1
+    m_Value: 0
+  blendMode:
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  precisionAlpha:
+    m_OverrideState: 1
+    m_Value: 1
+  precisionAlphaDitherTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  precisionAlphaDither:
+    m_OverrideState: 1
+    m_Value: 1
+  distanceMin:
+    m_OverrideState: 1
+    m_Value: 23.67
+  distanceMax:
+    m_OverrideState: 1
+    m_Value: 0.55
+  fogFalloffCurve:
+    m_OverrideState: 1
+    m_Value: 0
+  heightFalloffEnabled:
+    m_OverrideState: 1
+    m_Value: 0
+  heightFalloffMirrored:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMin:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMax:
+    m_OverrideState: 0
+    m_Value: 10
+  colorLUTMode:
+    m_OverrideState: 1
+    m_Value: 0
+  colorLUTTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  colorLUTRotationDegrees:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  colorLUTWeight:
+    m_OverrideState: 0
+    m_Value: 1
+  colorLUTWeightLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  isAdditionalLayerEnabled:
+    m_OverrideState: 1
+    m_Value: 0
+  fogFalloffModeLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  colorLayer1:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  distanceMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  distanceMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 100
+  fogFalloffCurveLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffEnabledLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffMirroredLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 10
+--- !u!114 &-4126349993250918449
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4315c5d81c1274fb8120ba49e62c21, type: 3}
+  m_Name: LightingVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.LightingVolume
+  active: 1
+  lightingIsEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+  bakedLightingMultiplier:
+    m_OverrideState: 1
+    m_Value: 7.33
+  vertexColorLightingMultiplier:
+    m_OverrideState: 1
+    m_Value: 16.09
+  dynamicLightingMultiplier:
+    m_OverrideState: 1
+    m_Value: 102.7
+  dynamicLightsMaxCount:
+    m_OverrideState: 1
+    m_Value: 219
+  dynamicLightsMaxPerObjectCount:
+    m_OverrideState: 1
+    m_Value: 8
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Global Volume Profile
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.VolumeProfile
+  components:
+  - {fileID: -4126349993250918449}
+  - {fileID: -4277203260421674215}
+  - {fileID: -7480392924930402743}
+  - {fileID: 245462477443715197}
+--- !u!114 &245462477443715197
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5485954d14dfb9a4c8ead8edb0ded5b1, type: 3}
+  m_Name: LiftGammaGain
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.LiftGammaGain
+  active: 0
+  lift:
+    m_OverrideState: 1
+    m_Value: {x: 0.97439444, y: 1, z: 0.9921327, w: -0.056074765}
+  gamma:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.9858012, z: 0.9651733, w: -0.1682243}
+  gain:
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 1, z: 1, w: 0}

@@ -1,0 +1,173 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-875017958653619032
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96575ff06efbe184aa6c6f9f90b4aab9, type: 3}
+  m_Name: FogVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.FogVolume
+  active: 1
+  isEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+  fogFalloffMode:
+    m_OverrideState: 1
+    m_Value: 2
+  blendMode:
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 1}
+  precisionAlpha:
+    m_OverrideState: 1
+    m_Value: 1
+  precisionAlphaDitherTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  precisionAlphaDither:
+    m_OverrideState: 1
+    m_Value: 1
+  distanceMin:
+    m_OverrideState: 1
+    m_Value: 0
+  distanceMax:
+    m_OverrideState: 1
+    m_Value: 0.15
+  fogFalloffCurve:
+    m_OverrideState: 1
+    m_Value: 0
+  heightFalloffEnabled:
+    m_OverrideState: 1
+    m_Value: 0
+  heightFalloffMirrored:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMin:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMax:
+    m_OverrideState: 0
+    m_Value: 10
+  colorLUTMode:
+    m_OverrideState: 1
+    m_Value: 0
+  colorLUTTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  colorLUTRotationDegrees:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  colorLUTWeight:
+    m_OverrideState: 0
+    m_Value: 1
+  colorLUTWeightLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  isAdditionalLayerEnabled:
+    m_OverrideState: 1
+    m_Value: 0
+  fogFalloffModeLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  colorLayer1:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  distanceMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  distanceMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 100
+  fogFalloffCurveLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffEnabledLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffMirroredLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 10
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
+  m_Name: Box Volume Profile
+  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.VolumeProfile
+  components:
+  - {fileID: 3730859912956058423}
+  - {fileID: 5895699993594942155}
+  - {fileID: -875017958653619032}
+--- !u!114 &3730859912956058423
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74f7b4b43d392da4aa0edc7aa47211ca, type: 3}
+  m_Name: QualityOverrideVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.QualityOverrideVolume
+  active: 1
+  isPSXQualityEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+--- !u!114 &5895699993594942155
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb00c03fccc953a4387732e1392ffcf8, type: 3}
+  m_Name: CameraVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.CameraVolume
+  active: 0
+  isFrameLimitEnabled:
+    m_OverrideState: 0
+    m_Value: 0
+  frameLimit:
+    m_OverrideState: 0
+    m_Value: 24
+  aspectMode:
+    m_OverrideState: 1
+    m_Value: 3
+  targetRasterizationResolutionWidth:
+    m_OverrideState: 1
+    m_Value: 256
+  targetRasterizationResolutionHeight:
+    m_OverrideState: 1
+    m_Value: 224
+  isDepthBufferEnabled:
+    m_OverrideState: 0
+    m_Value: 1
+  isClearDepthAfterBackgroundEnabled:
+    m_OverrideState: 0
+    m_Value: 1
+  isClearDepthBeforeUIEnabled:
+    m_OverrideState: 0
+    m_Value: 1

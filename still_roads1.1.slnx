@@ -1,4 +1,6 @@
 ﻿<Solution>
+  <Project Path="com.hauntedpsx.render-pipelines.psx.Runtime.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="com.hauntedpsx.render-pipelines.psx.Editor.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
 </Solution>

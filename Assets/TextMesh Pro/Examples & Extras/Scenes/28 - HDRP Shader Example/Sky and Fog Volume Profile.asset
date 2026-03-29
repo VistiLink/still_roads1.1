@@ -1,5 +1,107 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-5922398826731726344
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96575ff06efbe184aa6c6f9f90b4aab9, type: 3}
+  m_Name: FogVolume
+  m_EditorClassIdentifier: com.hauntedpsx.render-pipelines.psx.Runtime::HauntedPSX.RenderPipelines.PSX.Runtime.FogVolume
+  active: 1
+  isEnabled:
+    m_OverrideState: 1
+    m_Value: 1
+  fogFalloffMode:
+    m_OverrideState: 1
+    m_Value: 0
+  blendMode:
+    m_OverrideState: 1
+    m_Value: 0
+  color:
+    m_OverrideState: 1
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  precisionAlpha:
+    m_OverrideState: 1
+    m_Value: 1
+  precisionAlphaDitherTexture:
+    m_OverrideState: 1
+    m_Value: {fileID: 0}
+    dimension: 1
+  precisionAlphaDither:
+    m_OverrideState: 1
+    m_Value: 1
+  distanceMin:
+    m_OverrideState: 1
+    m_Value: 0
+  distanceMax:
+    m_OverrideState: 1
+    m_Value: 0.15
+  fogFalloffCurve:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffEnabled:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffMirrored:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMin:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMax:
+    m_OverrideState: 0
+    m_Value: 10
+  colorLUTMode:
+    m_OverrideState: 0
+    m_Value: 0
+  colorLUTTexture:
+    m_OverrideState: 0
+    m_Value: {fileID: 0}
+    dimension: 1
+  colorLUTRotationDegrees:
+    m_OverrideState: 0
+    m_Value: {x: 0, y: 0, z: 0}
+  colorLUTWeight:
+    m_OverrideState: 0
+    m_Value: 1
+  colorLUTWeightLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  isAdditionalLayerEnabled:
+    m_OverrideState: 0
+    m_Value: 0
+  fogFalloffModeLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  colorLayer1:
+    m_OverrideState: 0
+    m_Value: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  distanceMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  distanceMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 100
+  fogFalloffCurveLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffEnabledLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightFalloffMirroredLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMinLayer1:
+    m_OverrideState: 0
+    m_Value: 0
+  heightMaxLayer1:
+    m_OverrideState: 0
+    m_Value: 10
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13,7 +115,7 @@ MonoBehaviour:
   m_Name: Sky and Fog Volume Profile
   m_EditorClassIdentifier: 
   components:
-  - {fileID: 6704987263078244684}
+  - {fileID: -5922398826731726344}
 --- !u!114 &6704987263078244684
 MonoBehaviour:
   m_ObjectHideFlags: 3

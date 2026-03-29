@@ -7,6 +7,7 @@ public class RearWheelDrive : MonoBehaviour
     [Header("Car Settings")]
     public float maxAngle = 50f;
     public float maxTorque = 300f;
+    public float maxWheelRPM = 1000f; // Лимит оборотов, чтобы не крутились слишком быстро
 
     [Header("Handbrake")]
     public float handbrakeTorque = 6000f;
@@ -60,13 +61,15 @@ public class RearWheelDrive : MonoBehaviour
     private float defaultDamping;
     private bool tireOnSnow = false;
 
-    // 🔒 Handbrake state
     private bool handbrakeOn = false;
     private Coroutine handbrakeCoroutine;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        // Фикс зацепа: опускаем центр масс, чтобы колеса не висели в воздухе
+        rb.centerOfMass = new Vector3(0, -0.5f, 0);
+
         wheels = GetComponentsInChildren<WheelCollider>();
         defaultDamping = rb.linearDamping;
 
@@ -123,7 +126,6 @@ public class RearWheelDrive : MonoBehaviour
     {
         speedKmh = rb.linearVelocity.magnitude * 3.6f;
 
-        // Пропускает обработку пробела, если MenuinGame.BlockSpaceInput == true
         if (!MenuinGame.BlockSpaceInput && Input.GetKeyDown(KeyCode.Space))
         {
             handbrakeOn = !handbrakeOn;
@@ -143,17 +145,36 @@ public class RearWheelDrive : MonoBehaviour
         }
 
         float angle = maxAngle * Input.GetAxis("Horizontal");
-        float torque = maxTorque * Input.GetAxis("Vertical");
+        float verticalInput = Input.GetAxis("Vertical");
+        float torque = maxTorque * verticalInput;
 
         foreach (WheelCollider wheel in wheels)
         {
             if (wheel.transform.localPosition.z > 0)
                 wheel.steerAngle = angle;
 
-            if (wheel.transform.localPosition.z < 0 && !handbrakeOn)
+            if (wheel.transform.localPosition.z < 0)
             {
-                wheel.motorTorque = torque;
-                wheel.brakeTorque = 0f;
+                if (!handbrakeOn)
+                {
+                    // Проверка на RPM: если колесо крутится быстрее лимита, не даем больше момента
+                    if (Mathf.Abs(wheel.rpm) < maxWheelRPM)
+                        wheel.motorTorque = torque;
+                    else
+                        wheel.motorTorque = 0f;
+
+                    wheel.brakeTorque = 0f;
+                }
+                else
+                {
+                    // Если ручник включен, мотор не должен крутить колеса
+                    wheel.motorTorque = 0f;
+                }
+
+                // Сброс момента, если педаль газа отпущена
+                if (Mathf.Abs(verticalInput) < 0.05f)
+                    wheel.motorTorque = 0f;
+
                 ApplyGrip(wheel);
             }
 
@@ -171,10 +192,6 @@ public class RearWheelDrive : MonoBehaviour
         if ((Input.GetKeyDown(flipKey1) || Input.GetKeyDown(flipKey2)) && IsUpsideDown())
             FlipCar();
     }
-
-    // ======================
-    // HAND BRAKE (ТОРМОЗ)
-    // ======================
 
     IEnumerator HandbrakeOnRoutine()
     {
@@ -222,10 +239,6 @@ public class RearWheelDrive : MonoBehaviour
 
         rb.linearDamping = defaultDamping;
     }
-
-    // ======================
-    // ORIGINAL LOGIC
-    // ======================
 
     void UpdateSnowPhysics()
     {
