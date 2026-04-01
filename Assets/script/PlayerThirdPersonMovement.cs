@@ -10,26 +10,24 @@ public class PlayerThirdPersonMovement : MonoBehaviour
     public float gravity = -9.81f;
 
     private CharacterController controller;
+    private Animator anim; // Ссылка на аниматор
     private Vector3 velocity;
     private bool isGrounded;
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        anim = GetComponent<Animator>(); // Получаем компонент при запуске
     }
 
-    // OnEnable срабатывает каждый раз, когда персонаж появляется/активируется
     void OnEnable()
     {
         if (ExitPosition != null)
         {
-            // Отключаем контроллер на мгновение, чтобы переместить персонажа без помех физики
             if (controller == null) controller = GetComponent<CharacterController>();
             controller.enabled = false;
 
             transform.position = ExitPosition.position;
-
-            // Quaternion.identity — это вращение (0, 0, 0), взгляд строго вдоль оси Z
             transform.rotation = Quaternion.identity;
 
             controller.enabled = true;
@@ -57,7 +55,10 @@ public class PlayerThirdPersonMovement : MonoBehaviour
         Vector3 move = new Vector3(x, 0f, z);
         move = Vector3.ClampMagnitude(move, 1f);
 
-        if (move.magnitude > 0.01f)
+        // Проверяем, движется ли персонаж
+        bool isMoving = move.magnitude > 0.01f;
+
+        if (isMoving)
         {
             Quaternion targetRotation = Quaternion.LookRotation(move);
             transform.rotation = Quaternion.Slerp(
@@ -65,6 +66,12 @@ public class PlayerThirdPersonMovement : MonoBehaviour
                 targetRotation,
                 rotationSpeed * Time.deltaTime
             );
+        }
+
+        // Передаем состояние в Animator
+        if (anim != null)
+        {
+            anim.SetBool("isWalk", isMoving);
         }
 
         controller.Move(move * moveSpeed * Time.deltaTime);

@@ -1,0 +1,10 @@
+# Made in Blockbench 5.1.1
+newmtl m_f53c2ecf-3f5e-2712-e112-4d96c267ca7e
+map_Kd texture body.png
+newmtl m_ef2f6509-e697-e07e-8aa0-95c1d4baa3fc
+map_Kd texture face.png
+newmtl m_2fcffc0b-3898-36d7-c2ed-dd004749444e
+map_Kd texture hands.png
+newmtl m_37f25f1f-910e-39d6-d5b5-6e81a8bd7582
+map_Kd texture aff.png
+newmtl none
